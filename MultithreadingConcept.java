@@ -340,6 +340,169 @@ Handle exceptions properly in threads.
 
 Profile and debug multithreading issues using monitoring tools.
 
+  ============================================================================
+
+  1. Difference Between Multithreading and Multitasking
+Feature	Multithreading	Multitasking
+Definition	Running multiple threads within a single process.	Running multiple processes simultaneously.
+Granularity	Threads (smallest unit of execution within a program).	Processes (independent programs).
+Memory Usage	Shares memory (lightweight).	Each process has separate memory (heavy).
+Execution	Multiple threads of the same program run in parallel.	Multiple applications run in parallel.
+Example	A web browser using multiple threads for loading pages, playing videos, and downloading files.	Running Chrome, Spotify, and MS Word at the same time.
+2. Explanation of Methods in Multithreading
+1. yield() Method
+Purpose: It pauses the currently executing thread and allows other threads of the same priority to execute. However, the same thread may continue if no other thread is ready to run.
+Example:
+java
+Copy
+Edit
+class MyThread extends Thread {
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " is running");
+            Thread.yield(); // Giving other threads a chance
+        }
+    }
+}
+
+public class YieldExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        MyThread t2 = new MyThread();
+        t1.start();
+        t2.start();
+    }
+}
+Output (may vary):
+arduino
+Copy
+Edit
+Thread-0 is running
+Thread-1 is running
+Thread-0 is running
+Thread-1 is running
+Use Case: When a thread should give other threads a chance to execute first.
+2. interrupt() Method
+Purpose: It is used to stop a thread that is sleeping or waiting.
+Example:
+java
+Copy
+Edit
+class MyThread extends Thread {
+    public void run() {
+        try {
+            System.out.println("Thread is sleeping...");
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            System.out.println("Thread interrupted!");
+        }
+    }
+}
+
+public class InterruptExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        t1.start();
+        t1.interrupt(); // Interrupting the sleeping thread
+    }
+}
+Output:
+mathematica
+Copy
+Edit
+Thread is sleeping...
+Thread interrupted!
+Use Case: When we want to stop a thread that is sleeping or waiting.
+3. join() Method
+Purpose: It makes one thread wait for another thread to complete execution before continuing.
+Example:
+java
+Copy
+Edit
+class MyThread extends Thread {
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " running...");
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class JoinExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        MyThread t2 = new MyThread();
+        t1.start();
+        try {
+            t1.join(); // Main thread will wait for t1 to finish
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        t2.start();
+    }
+}
+Output:
+mathematica
+Copy
+Edit
+Thread-0 running...
+Thread-0 running...
+Thread-0 running...
+Thread-0 running...
+Thread-0 running...
+Thread-1 running...
+Thread-1 running...
+Thread-1 running...
+Thread-1 running...
+Thread-1 running...
+Use Case: When we need one thread to finish execution before another starts.
+4. sleep() Method
+Purpose: It pauses the current thread for a specific period.
+Example:
+java
+Copy
+Edit
+class MyThread extends Thread {
+    public void run() {
+        for (int i = 1; i <= 5; i++) {
+            System.out.println(Thread.currentThread().getName() + " running...");
+            try {
+                Thread.sleep(2000); // Sleep for 2 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+public class SleepExample {
+    public static void main(String[] args) {
+        MyThread t1 = new MyThread();
+        t1.start();
+    }
+}
+Output:
+arduino
+Copy
+Edit
+Thread-0 running...
+(2 seconds pause)
+Thread-0 running...
+(2 seconds pause)
+Thread-0 running...
+Use Case: When we need to pause a thread for a certain time.
+Summary Table
+Method	Purpose	Example Scenario
+yield()	Gives other threads a chance to execute first.	When a low-priority task should wait for others.
+interrupt()	Stops a sleeping/waiting thread.	Stopping a thread waiting for user input.
+join()	Waits for another thread to complete before continuing.	Waiting for a background task to finish before proceeding.
+sleep()	Pauses the current thread for a given time.	Adding a delay in execution (e.g., retrying a failed network request).
+Would you like more examples or a detailed explanation of any topic? 🚀
+
 
 
   
